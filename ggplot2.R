@@ -127,7 +127,52 @@ x.week.zero <-
 pbw.data <-
   x.data_aggregated |>
   filter(!is.na(played)) |>
-  select(Week, Team_538, PointsTally) |>
-  spread(Team, PointsTally) |>
+  select(Week, Team_cln, PointsTally) |>
+  spread(Team_cln, PointsTally) |>
   bind_rows(x.week.zero) |>
   arrange(Week)
+
+# Extract data for Week 10 and rank teams
+week_10_data <- x.rank %>% 
+  filter(Week == 10) %>% 
+  arrange(Position) %>% 
+  select(Team_cln, Position)
+
+# Create a vector of team names ordered by their Week 10 rankings
+ordered_teams <- week_10_data$Team_cln
+
+# Reorder the factor levels for the 'name' variable based on Week 10 rankings
+pbw.data_long <- pbw.data %>%
+  pivot_longer(cols = Arsenal:Wolverhampton) %>%
+  mutate(name = factor(name, levels = ordered_teams))
+
+# ggplot2 w/ gghighlight
+pbw.data_long %>%
+  ggplot(aes(Week, value, color = name)) +
+  geom_line(linewidth = 1) +
+  # scale_color_manual(values = rep("#e90052", 20)) +
+  scale_color_manual(values = )
+  scale_x_continuous(
+    breaks = seq(0, 10, by = 2)
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 30, by = 10),
+    labels = seq(0, 30, by = 10),
+    limits = c(0, 30)
+  ) +
+  gghighlight(
+    keep_scales      = TRUE,
+    use_direct_label = FALSE
+  ) +
+  facet_wrap(vars(name)) +
+  
+  labs(
+    x        = NULL,
+    y        = NULL,
+    title    = "Premier League Point Totals by Week",
+    subtitle = "2023-2024"
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = "none"
+  )
