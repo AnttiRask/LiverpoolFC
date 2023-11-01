@@ -146,12 +146,21 @@ pbw.data_long <- pbw.data %>%
   pivot_longer(cols = Arsenal:Wolverhampton) %>%
   mutate(name = factor(name, levels = ordered_teams))
 
+# Fetch the team colors for the ordered_teams
+team_colors <- ordered_teams %>% 
+  as_tibble() %>%
+  inner_join(
+    x.premier.league.clubs,
+    by = c("value" = "Team_cln")
+  ) %>%
+  pull(TeamColor)
+
 # ggplot2 w/ gghighlight
 pbw.data_long %>%
   ggplot(aes(Week, value, color = name)) +
   geom_line(linewidth = 1) +
   # scale_color_manual(values = rep("#e90052", 20)) +
-  scale_color_manual(values = )
+  scale_color_manual(values = team_colors) +
   scale_x_continuous(
     breaks = seq(0, 10, by = 2)
   ) +
