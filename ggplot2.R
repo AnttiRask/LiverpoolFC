@@ -162,7 +162,7 @@ pbw.data_long %>%
   # scale_color_manual(values = rep("#e90052", 20)) +
   scale_color_manual(values = team_colors) +
   scale_x_continuous(
-    breaks = seq(0, 10, by = 2)
+    breaks = seq(0, 25, by = 5)
   ) +
   scale_y_continuous(
     breaks = seq(0, 30, by = 10),
@@ -174,7 +174,6 @@ pbw.data_long %>%
     use_direct_label = FALSE
   ) +
   facet_wrap(vars(name)) +
-  
   labs(
     x        = NULL,
     y        = NULL,
